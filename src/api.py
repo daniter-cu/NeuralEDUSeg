@@ -145,9 +145,6 @@ def segment(args):
         save_path = os.path.join(args.result_dir, os.path.basename(file))
         logger.info('Saving into {}'.format(save_path))
         with open(save_path, 'w') as fout:
-            # for edu in edus:
-            #     fout.write(edu + '\n')
-
             logger.info('Segmenting {}...'.format(file))
             raw_sents = []
             space_index = set()
@@ -165,7 +162,6 @@ def segment(args):
             rst_data.test_samples = samples
             data_batches = rst_data.gen_mini_batches(args.batch_size, test=True, shuffle=False)
 
-            #edus = []
             write_counter = 0
             for batch in data_batches:
                 batch_pred_segs = model.segment(batch)
@@ -176,22 +172,9 @@ def segment(args):
                     one_edu_words = []
                     for word_idx, word in enumerate(sample['words']):
                         if word_idx in pred_segs:
-                            #edus.append(' '.join(one_edu_words))
                             fout.write(' '.join(one_edu_words) + '\n')
                             one_edu_words = []
                         one_edu_words.append(word)
                     if one_edu_words:
-                        #edus.append(' '.join(one_edu_words))
                         fout.write(' '.join(one_edu_words) + '\n')
                     write_counter += 1
-
-        # if not os.path.exists(args.result_dir):
-        #     os.makedirs(args.result_dir)
-        # save_path = os.path.join(args.result_dir, os.path.basename(file))
-        # logger.info('Saving into {}'.format(save_path))
-        # with open(save_path, 'w') as fout:
-        #     for edu in edus:
-        #         fout.write(edu + '\n')
-
-        
-        # TODO(daniter): write streaming and keep spaces
