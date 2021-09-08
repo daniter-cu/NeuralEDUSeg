@@ -70,3 +70,28 @@ Please cite the following paper if you use this toolkit in your work:
   year={2018}
 }
 ```
+
+
+# DANITER Notes:
+
+This code is a bit dated so here are the steps to get this running on Sept 2021
+
+EDU segmenter details:  
+* use python 3.6  
+* install allennlp from source - https://github.com/allenai/allennlp/releases/tag/v0.4.2  
+--  
+pip install -U pip setuptools wheel  
+pip install --editable .  
+pip install -r requirements.txt  
+allennlp test-install  
+-- 
+
+* fix allen bug pip install overrides==3.1.0  
+* replace from scipy.optimize import linear_sum_assignment as linear_assignment 
+In <PATH>/eduseg/allennlp-0.4.2/allennlp/training/metrics/conll_coref_scores.py  
+
+
+Run eduseg in allennlp conda env.
+Install old version of tensorflow	(pip install tensorflow==1.5.0)
+
+Must run on GPU machine...
