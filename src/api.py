@@ -156,9 +156,12 @@ def segment(args):
                     else:
                         space_index.add(i)
             samples = []
+            tokens = []
             for sent in spacy_nlp.pipe(raw_sents, batch_size=1000, n_threads=5):
                 samples.append({'words': [token.text for token in sent],
+                                'token4recon': [token for token in sent],
                                 'edu_seg_indices': []})
+                tokens.append([token for token in sent])
             rst_data.test_samples = samples
             data_batches = rst_data.gen_mini_batches(args.batch_size, test=True, shuffle=False)
 
@@ -170,11 +173,11 @@ def segment(args):
                         fout.write('\n')
                         write_counter += 1
                     one_edu_words = []
-                    for word_idx, word in enumerate(sample['words']):
+                    for word_idx, word in enumerate(sample['token4recon']):
                         if word_idx in pred_segs:
-                            fout.write(' '.join(one_edu_words) + '\n')
+                            fout.write(''.join([token.text_with_ws for token in one_edu_words]) + '\n')
                             one_edu_words = []
                         one_edu_words.append(word)
                     if one_edu_words:
-                        fout.write(' '.join(one_edu_words) + '\n')
+                        fout.write(''.join([token.text_with_ws for token in one_edu_words]) + '\n')
                     write_counter += 1
