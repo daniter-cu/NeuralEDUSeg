@@ -142,4 +142,4 @@ fabric.properties
 **/data/embeddings
 **/data/data.zip
 **/.DS_Store
-
+data/

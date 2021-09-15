@@ -12,6 +12,7 @@ from preprocess import preprocess_rst_data
 from vocab import Vocab
 from rst_edu_reader import RSTData
 from atten_seg import AttnSegModel
+from tqdm import tqdm
 
 
 def prepare(args):
@@ -156,17 +157,16 @@ def segment(args):
                     else:
                         space_index.add(i)
             samples = []
-            tokens = []
-            for sent in spacy_nlp.pipe(raw_sents, batch_size=1000, n_threads=5):
+            print("Spacy Processing Raw Sentences...", len(raw_sents))
+            for sent in tqdm(spacy_nlp.pipe(raw_sents, batch_size=1000, n_threads=5), total=len(raw_sents)):
                 samples.append({'words': [token.text for token in sent],
                                 'token4recon': [token for token in sent],
                                 'edu_seg_indices': []})
-                tokens.append([token for token in sent])
             rst_data.test_samples = samples
             data_batches = rst_data.gen_mini_batches(args.batch_size, test=True, shuffle=False)
 
             write_counter = 0
-            for batch in data_batches:
+            for batch in tqdm(data_batches, total=len(samples) / args.batch_size):
                 batch_pred_segs = model.segment(batch)
                 for sample, pred_segs in zip(batch['raw_data'], batch_pred_segs):
                     if write_counter in space_index:
